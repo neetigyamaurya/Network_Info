@@ -2,7 +2,7 @@
 
 import argparse
 import socket
-from python_hosts import Hosts, HostsEntry
+from python_hosts import Hosts
 
 
 # parser=argparse.ArgumentParser()
@@ -44,7 +44,7 @@ def get_domain_by_ip(ip_address):
     try:
         hostname=socket.gethostbyaddr(ip_address)[0] #This works by using the PTR Records
         return hostname
-    except socket.herror:
+    except (socket.herror, socket.gaierror):
         return "Hostname not found"
     
 def host_file_contents(ip_address):
@@ -53,23 +53,44 @@ def host_file_contents(ip_address):
     #Itterate through all entries in the Host file
     for entry in host.entries:
         if entry.entry_type in ['ipv4','ipv6']:
-            print(f"IP: {entry.address}, Names: {entry.names}")
-        elif entry.entry_type == 'comment':
-            print(f"Comment: {entry.comment}")
+            if ip_address == entry.address:
+                return entry.names
+    return None
 
+def domain_validation(domain_name):
+    try:
+        return socket.gethostbyname(domain_name)
+    except socket.gaierror:
+        return "Invalid domain name"
+
+
+def cross_validation(domain_name):
+    ip_address=domain_validation(domain_name)
+    if ip_address == "Invalid domain name":
+        print(ip_address)
+        return
+    print(f"{domain_name} -> {ip_address} -> {get_domain_by_ip(ip_address)}")
 
 
 parser=argparse.ArgumentParser()
-parser.add_argument("-a","--address",help="Enter the IPV4 address.",required=True)
+parser.add_argument("-a","--address",help="Enter the IPV4 address.")
+parser.add_argument("-d","--domain",help="Enter an domain name to get the IP")
+parser.add_argument("-c","--cross_validation",help="Cross Validates and IP with Domain")
 
 args=parser.parse_args()
-if inputValidation(args.address):
+if args.domain:
+    print(domain_validation(args.domain))
+elif args.cross_validation:
+    cross_validation(args.cross_validation)
+if args.address and inputValidation(args.address):
     if is_private_ip(args.address):
         print("Private IP address")
-        host_file_contents()
     else:
         print(get_domain_by_ip(args.address))
-else:
+        hosts_entry=host_file_contents(args.address)
+        if hosts_entry:
+            print(hosts_entry)
+elif args.address:
     print("Invalid IPV4 address")
 
 

@@ -1,6 +1,6 @@
 # Network Recon Tool
 
-A Python-based network reconnaissance tool designed to perform basic host discovery and service enumeration tasks. This project is being built as part of a structured Python learning roadmap focused on networking and red team fundamentals.
+A Python-based network reconnaissance tool designed to perform basic host discovery and service enumeration tasks. 
 
 ---
 
@@ -173,10 +173,4 @@ Report Generation
 
 ---
 
-## Author
 
-Neetigya Maurya
-
-Project Type: Python Networking & Red Team Learning Project
-
-Status: In Development
