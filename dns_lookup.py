@@ -72,25 +72,30 @@ def cross_validation(domain_name):
     print(f"{domain_name} -> {ip_address} -> {get_domain_by_ip(ip_address)}")
 
 
-parser=argparse.ArgumentParser()
-parser.add_argument("-a","--address",help="Enter the IPV4 address.")
-parser.add_argument("-d","--domain",help="Enter an domain name to get the IP")
-parser.add_argument("-c","--cross_validation",help="Cross Validates and IP with Domain")
+def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("-a","--address",help="Enter the IPV4 address.")
+    parser.add_argument("-d","--domain",help="Enter an domain name to get the IP")
+    parser.add_argument("-c","--cross_validation",help="Cross Validates and IP with Domain")
 
-args=parser.parse_args()
-if args.domain:
-    print(domain_validation(args.domain))
-elif args.cross_validation:
-    cross_validation(args.cross_validation)
-if args.address and inputValidation(args.address):
-    if is_private_ip(args.address):
-        print("Private IP address")
-    else:
-        print(get_domain_by_ip(args.address))
-        hosts_entry=host_file_contents(args.address)
-        if hosts_entry:
-            print(hosts_entry)
-elif args.address:
-    print("Invalid IPV4 address")
+    args=parser.parse_args()
+    if args.domain:
+        print(domain_validation(args.domain))
+    elif args.cross_validation:
+        cross_validation(args.cross_validation)
+    if args.address and inputValidation(args.address):
+        if is_private_ip(args.address):
+            print("Private IP address")
+        else:
+            print(get_domain_by_ip(args.address))
+            hosts_entry=host_file_contents(args.address)
+            if hosts_entry:
+                print(hosts_entry)
+    elif args.address:
+        print("Invalid IPV4 address")
+
+
+if __name__ == "__main__":
+    main()
 
 
